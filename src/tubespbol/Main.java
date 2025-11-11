@@ -8,7 +8,7 @@ package tubespbol;
  *
  * @author Richard
  */
-public class TubesPBOL {
+public class Main {
 
     /**
      * @param args the command line arguments
