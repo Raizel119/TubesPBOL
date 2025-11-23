@@ -25,14 +25,19 @@ public class DashboardDosen extends JFrame {
         sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
 
         SidebarButton btnDashboard = new SidebarButton("Dashboard", "/tubespbol/resources/icons/dashboard.png");
-        SidebarButton btnJadwal = new SidebarButton("Jadwal Saya", "/tubespbol/resources/icons/schedule.png");
-        SidebarButton btnPermintaan = new SidebarButton("Permintaan", "/tubespbol/resources/icons/request.png");
+
+        // sesuai PDF: Dosen mengatur jadwal
+        SidebarButton btnKetersediaan = new SidebarButton("Jadwal Ketersediaan", "/tubespbol/resources/icons/schedule.png");
+
+        // sesuai PDF: Dosen melihat permintaan masuk
+        SidebarButton btnPermintaanMasuk = new SidebarButton("Permintaan Masuk", "/tubespbol/resources/icons/request.png");
+
         SidebarButton btnRiwayat = new SidebarButton("Riwayat", "/tubespbol/resources/icons/history.png");
         SidebarButton btnLogout = new SidebarButton("Logout", "/tubespbol/resources/icons/logout.png");
 
         sidebar.add(btnDashboard);
-        sidebar.add(btnJadwal);
-        sidebar.add(btnPermintaan);
+        sidebar.add(btnKetersediaan);
+        sidebar.add(btnPermintaanMasuk);
         sidebar.add(btnRiwayat);
         sidebar.add(btnLogout);
 
@@ -42,11 +47,11 @@ public class DashboardDosen extends JFrame {
         contentPanel = new JPanel(new CardLayout());
         add(contentPanel, BorderLayout.CENTER);
 
-        // Panel khusus dosen → bisa beda dari mahasiswa
-        contentPanel.add(new PanelDashboard(), "dashboard");
-        contentPanel.add(new PanelJadwal(), "jadwal");
-        contentPanel.add(new PanelPermintaan(), "permintaan");
-        contentPanel.add(new PanelRiwayat(), "riwayat");
+        // Panel-panel untuk Dosen
+        contentPanel.add(new PanelDashboardDosen(), "dashboard");
+        contentPanel.add(new PanelJadwalDosen(), "ketersediaan");
+        contentPanel.add(new PanelPermintaanMasuk(), "permintaanMasuk");
+        contentPanel.add(new PanelRiwayatDosen(), "riwayat");
 
         // ================= LISTENERS =================
         btnDashboard.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -54,21 +59,25 @@ public class DashboardDosen extends JFrame {
                 showPanel("dashboard");
             }
         });
-        btnJadwal.addMouseListener(new java.awt.event.MouseAdapter() {
+
+        btnKetersediaan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showPanel("jadwal");
+                showPanel("ketersediaan");
             }
         });
-        btnPermintaan.addMouseListener(new java.awt.event.MouseAdapter() {
+
+        btnPermintaanMasuk.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showPanel("permintaan");
+                showPanel("permintaanMasuk");
             }
         });
+
         btnRiwayat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 showPanel("riwayat");
             }
         });
+
         btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 dispose();
