@@ -10,19 +10,21 @@ public class PanelRiwayat extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        JLabel title = new JLabel("Riwayat Permintaan");
+        JLabel title = new JLabel("Riwayat Pertemuan");
         title.setFont(new Font("Segoe UI", Font.BOLD, 26));
         title.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         add(title, BorderLayout.NORTH);
 
         String[] columns = {"Tanggal", "Dosen", "Status"};
-        Object[][] data = {
+        Object[][] rows = {
             {"10/11/2025", "Dr. Budi", "Approved"},
-            {"09/11/2025", "Dr. Rina", "Rejected"},};
+            {"12/11/2025", "Dr. Rina", "Rejected"}
+        };
 
-        JTable table = new JTable(new DefaultTableModel(data, columns));
+        JTable table = new JTable(new DefaultTableModel(rows, columns));
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        table.setRowHeight(30);
+        table.setRowHeight(28);
 
         add(new JScrollPane(table), BorderLayout.CENTER);
     }

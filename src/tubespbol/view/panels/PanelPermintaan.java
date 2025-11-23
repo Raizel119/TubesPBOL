@@ -6,8 +6,8 @@ import java.awt.*;
 public class PanelPermintaan extends JPanel {
 
     public PanelPermintaan() {
-        setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
+        setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -26,39 +26,43 @@ public class PanelPermintaan extends JPanel {
 
         add(new JLabel("Pilih Dosen:"), gbc);
         gbc.gridx = 1;
-        JComboBox<String> cbDosen = new JComboBox<>(new String[]{
-            "Dr. Budi", "Dr. Rina", "Pak Andi"
-        });
+
+        JComboBox<String> cbDosen = new JComboBox<>(new String[]{"Dr. Budi", "Dr. Rina", "Pak Andi"});
         add(cbDosen, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel("Tanggal:"), gbc);
+        add(new JLabel("Tanggal (dd/mm/yyyy):"), gbc);
         gbc.gridx = 1;
-        JTextField txtTanggal = new JTextField();
-        add(txtTanggal, gbc);
+
+        JTextField txtDate = new JTextField();
+        add(txtDate, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Waktu:"), gbc);
         gbc.gridx = 1;
-        JTextField txtWaktu = new JTextField();
-        add(txtWaktu, gbc);
+
+        JTextField txtTime = new JTextField();
+        add(txtTime, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Keperluan:"), gbc);
         gbc.gridx = 1;
-        JTextArea txtAlasan = new JTextArea(4, 20);
-        add(new JScrollPane(txtAlasan), gbc);
+
+        JTextArea txtDesc = new JTextArea(3, 20);
+        add(new JScrollPane(txtDesc), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        JButton btnKirim = new JButton("Kirim Permintaan");
-        btnKirim.setBackground(new Color(46, 134, 193));
-        btnKirim.setForeground(Color.WHITE);
-        btnKirim.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        add(btnKirim, gbc);
+
+        JButton btnSubmit = new JButton("Kirim");
+        btnSubmit.setBackground(new Color(46, 134, 193));
+        btnSubmit.setForeground(Color.WHITE);
+        btnSubmit.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        add(btnSubmit, gbc);
     }
 }
