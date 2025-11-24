@@ -1,10 +1,9 @@
 package tubespbol.view;
 
+import java.awt.*;
+import javax.swing.*;
 import tubespbol.view.components.SidebarButton;
 import tubespbol.view.panels.*;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class DashboardDosen extends JFrame {
 
