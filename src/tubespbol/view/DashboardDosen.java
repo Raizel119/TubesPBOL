@@ -11,17 +11,52 @@ public class DashboardDosen extends JFrame {
 
     public DashboardDosen() {
         setTitle("Dashboard Dosen");
-        setSize(1000, 600);
+        setSize(1040, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         setLayout(new BorderLayout());
 
         // ================= SIDEBAR =================
-        JPanel sidebar = new JPanel();
-        sidebar.setBackground(new Color(31, 78, 121)); // Biru tua
-        sidebar.setPreferredSize(new Dimension(200, 600));
+        JPanel sidebar = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                
+                // Gradient dari biru ke ungu (sama dengan mahasiswa)
+                GradientPaint gp = new GradientPaint(
+                    0, 0, new Color(41, 128, 185),
+                    0, getHeight(), new Color(142, 68, 173)
+                );
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        sidebar.setPreferredSize(new Dimension(240, 600));
         sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
+        
+        // Header Profile
+        JPanel profilePanel = new JPanel();
+        profilePanel.setOpaque(false);
+        profilePanel.setPreferredSize(new Dimension(220, 80));
+        profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
+        
+        JLabel avatarLabel = new JLabel("👨‍🏫");
+        avatarLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 40));
+        avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel nameLabel = new JLabel("Dosen");
+        nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        profilePanel.add(avatarLabel);
+        profilePanel.add(Box.createVerticalStrut(5));
+        profilePanel.add(nameLabel);
+        
+        sidebar.add(profilePanel);
 
         SidebarButton btnDashboard = new SidebarButton("Dashboard", "/tubespbol/resources/icons/dashboard.png");
 
