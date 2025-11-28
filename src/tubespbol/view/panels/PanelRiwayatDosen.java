@@ -185,7 +185,7 @@ public class PanelRiwayatDosen extends JPanel {
                     
                     String query = "SELECT r.*, m.nama as nama_mahasiswa, m.prodi as prodi_mahasiswa " +
                                   "FROM request_pertemuan r " +
-                                  "JOIN master_mahasiswa m ON r.nim = m.nim " +
+                                  "JOIN users_mahasiswa m ON r.nim = m.nim " +
                                   "WHERE r.id_dosen = ? ";
                     
                     // Add filter
