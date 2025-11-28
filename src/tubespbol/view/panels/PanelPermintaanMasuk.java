@@ -116,6 +116,7 @@ public class PanelPermintaanMasuk extends JPanel {
         btnDetail.addActionListener(e -> showDetail());
 
         actionPanel.add(btnSetujui);
+        actionPanel.add(Box.createHorizontalStrut(15));
         actionPanel.add(btnTolak);
         actionPanel.add(btnDetail);
 
