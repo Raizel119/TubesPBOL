@@ -54,7 +54,6 @@ public class RequestService {
             conn = Database.getConnection();
             if (conn == null) return requests;
             
-            // UPDATE: Join ke users_mahasiswa (bukan master_mahasiswa)
             String query = "SELECT r.*, m.nama as nama_mahasiswa, m.prodi as prodi_mahasiswa " +
                           "FROM request_pertemuan r " +
                           "JOIN users_mahasiswa m ON r.nim = m.nim " +
@@ -75,7 +74,7 @@ public class RequestService {
                 req.put("jam_mulai", rs.getString("jam_mulai"));
                 req.put("jam_selesai", rs.getString("jam_selesai"));
                 req.put("keperluan", rs.getString("keperluan"));
-                req.put("status", rs.getString("status")); // Tambahkan status biar bisa difilter
+                req.put("status", rs.getString("status"));
                 requests.add(req);
             }
             rs.close();
@@ -88,7 +87,6 @@ public class RequestService {
         return requests;
     }
     
-    // UPDATE: Parameter requestId diubah jadi String agar cocok dengan Panel
     public boolean terimaRequest(String requestId, String keteranganDosen) {
         Connection conn = null;
         try {
@@ -98,7 +96,7 @@ public class RequestService {
             String query = "UPDATE request_pertemuan SET status = 'DITERIMA', keterangan_dosen = ? WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, keteranganDosen);
-            stmt.setInt(2, Integer.parseInt(requestId)); // Parse String ke Int
+            stmt.setInt(2, Integer.parseInt(requestId));
             
             int affected = stmt.executeUpdate();
             stmt.close();
@@ -111,7 +109,6 @@ public class RequestService {
         }
     }
     
-    // UPDATE: Parameter requestId diubah jadi String
     public boolean tolakRequest(String requestId, String alasan) {
         Connection conn = null;
         try {
@@ -121,7 +118,7 @@ public class RequestService {
             String query = "UPDATE request_pertemuan SET status = 'DITOLAK', alasan_penolakan = ? WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, alasan);
-            stmt.setInt(2, Integer.parseInt(requestId)); // Parse String ke Int
+            stmt.setInt(2, Integer.parseInt(requestId));
             
             int affected = stmt.executeUpdate();
             stmt.close();
@@ -134,24 +131,34 @@ public class RequestService {
         }
     }
 
-    // === METODE BARU YANG HILANG ===
-    public boolean updateStatusToNA(String requestId) {
+    /**
+     * Membersihkan request kadaluwarsa (PENDING tapi lewat waktu) menjadi N/A.
+     * Menggunakan SQL langsung agar cepat dan hemat resource.
+     * Logika: Jika (Tanggal + Jam Selesai) < Waktu Sekarang, maka ubah jadi N/A.
+     */
+    public void autoUpdateExpired(String idDosen) {
         Connection conn = null;
         try {
             conn = Database.getConnection();
-            if (conn == null) return false;
+            if (conn == null) return;
+
+            // Query sakti untuk update massal
+            String query = "UPDATE request_pertemuan " +
+                           "SET status = 'N/A' " +
+                           "WHERE id_dosen = ? " +
+                           "AND status = 'PENDING' " +
+                           "AND TIMESTAMP(tanggal, jam_selesai) < NOW()";
             
-            // Pastikan kolom ENUM di database sudah ada 'N/A'
-            String query = "UPDATE request_pertemuan SET status = 'N/A' WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setInt(1, Integer.parseInt(requestId));
+            stmt.setString(1, idDosen);
             
             int affected = stmt.executeUpdate();
+            if (affected > 0) {
+                System.out.println("Auto-Update: " + affected + " data kadaluwarsa diubah ke N/A");
+            }
             stmt.close();
-            return affected > 0;
         } catch (SQLException e) {
-            System.out.println("✗ Error update status NA: " + e.getMessage());
-            return false;
+            System.out.println("Error auto-update: " + e.getMessage());
         } finally {
             Database.closeConnection(conn);
         }
@@ -164,7 +171,6 @@ public class RequestService {
             conn = Database.getConnection();
             if (conn == null) return requests;
             
-            // UPDATE: Join ke users_dosen
             String query = "SELECT r.*, d.nama as nama_dosen, d.prodi as prodi_dosen " +
                           "FROM request_pertemuan r " +
                           "JOIN users_dosen d ON r.id_dosen = d.id_dosen " +

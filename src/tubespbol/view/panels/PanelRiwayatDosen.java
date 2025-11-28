@@ -21,12 +21,10 @@ public class PanelRiwayatDosen extends JPanel {
     private JComboBox<String> cmbFilter;
     private ArrayList<Map<String, String>> riwayatList;
     
-    // Constructor LAMA
     public PanelRiwayatDosen() {
         this(null, null, null);
     }
     
-    // Constructor BARU
     public PanelRiwayatDosen(String idDosen, Map<String, String> userData, RequestService requestService) {
         this.idDosen = idDosen;
         this.userData = userData;
@@ -43,7 +41,6 @@ public class PanelRiwayatDosen extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(236, 240, 245));
 
-        // ========== HEADER ==========
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(236, 240, 245));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 15, 20));
@@ -85,7 +82,6 @@ public class PanelRiwayatDosen extends JPanel {
 
         add(headerPanel, BorderLayout.NORTH);
 
-        // ========== TABLE ==========
         String[] cols = {"No", "Mahasiswa", "NIM", "Tanggal", "Waktu", "Status", "Keterangan"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
@@ -104,16 +100,14 @@ public class PanelRiwayatDosen extends JPanel {
         table.setSelectionForeground(Color.BLACK);
         table.setGridColor(new Color(220, 220, 220));
         
-        // Column widths
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);  // No
-        table.getColumnModel().getColumn(1).setPreferredWidth(150); // Nama
-        table.getColumnModel().getColumn(2).setPreferredWidth(100); // NIM
-        table.getColumnModel().getColumn(3).setPreferredWidth(100); // Tanggal
-        table.getColumnModel().getColumn(4).setPreferredWidth(100); // Waktu
-        table.getColumnModel().getColumn(5).setPreferredWidth(100); // Status
-        table.getColumnModel().getColumn(6).setPreferredWidth(250); // Keterangan
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table.getColumnModel().getColumn(1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(100);
+        table.getColumnModel().getColumn(5).setPreferredWidth(100);
+        table.getColumnModel().getColumn(6).setPreferredWidth(250);
         
-        // Custom cell renderer untuk status
         table.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -123,20 +117,19 @@ public class PanelRiwayatDosen extends JPanel {
                 if (!isSelected) {
                     String status = value != null ? value.toString() : "";
                     if (status.equals("DITERIMA")) {
-                        c.setForeground(new Color(39, 174, 96)); // Green
+                        c.setForeground(new Color(39, 174, 96));
                         setFont(getFont().deriveFont(Font.BOLD));
                     } else if (status.equals("DITOLAK")) {
-                        c.setForeground(new Color(231, 76, 60)); // Red
+                        c.setForeground(new Color(231, 76, 60));
                         setFont(getFont().deriveFont(Font.BOLD));
                     } else if (status.equals("N/A")) {
-                        c.setForeground(new Color(230, 126, 34)); // Orange
+                        c.setForeground(new Color(230, 126, 34));
                         setFont(getFont().deriveFont(Font.BOLD));
                     } else {
                         c.setForeground(Color.BLACK);
                         setFont(getFont().deriveFont(Font.PLAIN));
                     }
                 }
-                
                 setHorizontalAlignment(CENTER);
                 return c;
             }
@@ -146,7 +139,6 @@ public class PanelRiwayatDosen extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 25, 15, 25));
         add(scrollPane, BorderLayout.CENTER);
         
-        // ========== INFO PANEL ==========
         JPanel infoPanel = new JPanel();
         infoPanel.setBackground(new Color(236, 240, 245));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 15, 25));
@@ -158,7 +150,6 @@ public class PanelRiwayatDosen extends JPanel {
         infoPanel.add(lblInfo);
         add(infoPanel, BorderLayout.SOUTH);
         
-        // Double click untuk detail
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2) {
@@ -168,11 +159,21 @@ public class PanelRiwayatDosen extends JPanel {
         });
     }
     
-    // ========== DATABASE OPERATIONS ==========
-    
     private void loadRiwayat(String filter) {
         if (idDosen == null) return;
         
+        // --- 1. JALANKAN PEMBERSIHAN OTOMATIS DULU ---
+        new Thread(() -> {
+            if (requestService != null) {
+                requestService.autoUpdateExpired(idDosen);
+            }
+            
+            // --- 2. SETELAH BERSIH, BARU LOAD DATA ---
+            SwingUtilities.invokeLater(() -> executeLoadWorker(filter));
+        }).start();
+    }
+
+    private void executeLoadWorker(String filter) {
         SwingWorker<ArrayList<Map<String, String>>, Void> worker = new SwingWorker<ArrayList<Map<String, String>>, Void>() {
             @Override
             protected ArrayList<Map<String, String>> doInBackground() {
@@ -188,7 +189,6 @@ public class PanelRiwayatDosen extends JPanel {
                                   "JOIN users_mahasiswa m ON r.nim = m.nim " +
                                   "WHERE r.id_dosen = ? ";
                     
-                    // Add filter
                     if (!filter.equals("SEMUA")) {
                         query += "AND r.status = ? ";
                     }
@@ -219,19 +219,13 @@ public class PanelRiwayatDosen extends JPanel {
                         req.put("keterangan_dosen", rs.getString("keterangan_dosen") != null ? rs.getString("keterangan_dosen") : "");
                         riwayat.add(req);
                     }
-                    
                     rs.close();
                     stmt.close();
-                    
-                    System.out.println("Total riwayat loaded: " + riwayat.size());
-                    
                 } catch (SQLException e) {
-                    System.err.println("Error loading riwayat: " + e.getMessage());
                     e.printStackTrace();
                 } finally {
                     Database.closeConnection(conn);
                 }
-                
                 return riwayat;
             }
             
@@ -239,12 +233,9 @@ public class PanelRiwayatDosen extends JPanel {
             protected void done() {
                 try {
                     ArrayList<Map<String, String>> result = get();
-                    if (result == null) {
-                        result = new ArrayList<>();
-                    }
+                    if (result == null) result = new ArrayList<>();
                     riwayatList = result;
                     
-                    // Clear table
                     tableModel.setRowCount(0);
                     
                     if (riwayatList.isEmpty()) {
@@ -258,7 +249,6 @@ public class PanelRiwayatDosen extends JPanel {
                             String waktu = req.get("jam_mulai") + " - " + req.get("jam_selesai");
                             String status = req.get("status");
                             
-                            // Determine keterangan
                             String keterangan = "";
                             if ("DITERIMA".equals(status)) {
                                 keterangan = req.get("keterangan_dosen");
@@ -268,7 +258,6 @@ public class PanelRiwayatDosen extends JPanel {
                                 keterangan = "Permintaan melewati tanggal yang ditentukan";
                             }
                             
-                            // Truncate keterangan
                             if (keterangan != null && keterangan.length() > 50) {
                                 keterangan = keterangan.substring(0, 47) + "...";
                             }
@@ -277,11 +266,7 @@ public class PanelRiwayatDosen extends JPanel {
                         }
                     }
                 } catch (Exception e) {
-                    System.err.println("Error done: " + e.getMessage());
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(PanelRiwayatDosen.this,
-                        "Gagal memuat riwayat: " + e.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         };
@@ -290,22 +275,9 @@ public class PanelRiwayatDosen extends JPanel {
     
     private void showDetail() {
         int selectedRow = table.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this,
-                "Pilih riwayat terlebih dahulu!",
-                "Info", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        
-        if (riwayatList == null || riwayatList.isEmpty() || selectedRow >= riwayatList.size()) {
-            JOptionPane.showMessageDialog(this,
-                "Data tidak ditemukan!",
-                "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        if (selectedRow < 0 || riwayatList == null || selectedRow >= riwayatList.size()) return;
         
         Map<String, String> req = riwayatList.get(selectedRow);
-        
         String status = req.get("status");
         String statusIcon = "DITERIMA".equals(status) ? "✓" : "DITOLAK".equals(status) ? "✗" : "⚠️";
         
@@ -320,20 +292,11 @@ public class PanelRiwayatDosen extends JPanel {
         detail.append("Keperluan:\n").append(req.get("keperluan")).append("\n\n");
         
         if ("DITERIMA".equals(status)) {
-            String ket = req.get("keterangan_dosen");
-            if (ket != null && !ket.isEmpty()) {
-                detail.append("Keterangan Dosen:\n").append(ket);
-            }
+            detail.append("Keterangan Dosen:\n").append(req.get("keterangan_dosen"));
         } else if ("DITOLAK".equals(status)) {
-            String alasan = req.get("alasan_penolakan");
-            if (alasan != null && !alasan.isEmpty()) {
-                detail.append("Alasan Penolakan:\n").append(alasan);
-            }
+            detail.append("Alasan Penolakan:\n").append(req.get("alasan_penolakan"));
         } else if ("N/A".equals(status)) {
-            detail.append("CATATAN:\n");
-            detail.append("Permintaan ini telah melewati tanggal yang ditentukan.\n");
-            detail.append("Tidak ada tindakan yang dilakukan (tidak disetujui maupun ditolak).\n");
-            detail.append("Status otomatis diubah menjadi N/A oleh sistem.");
+            detail.append("CATATAN:\nPermintaan ini telah melewati tanggal yang ditentukan.\nTidak ada tindakan yang dilakukan.\nStatus otomatis diubah menjadi N/A.");
         }
         
         JTextArea textArea = new JTextArea(detail.toString());
@@ -341,12 +304,8 @@ public class PanelRiwayatDosen extends JPanel {
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setMargin(new java.awt.Insets(10, 10, 10, 10));
         
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(450, 320));
-        
-        JOptionPane.showMessageDialog(this, scrollPane, "Detail Riwayat", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "Detail Riwayat", JOptionPane.INFORMATION_MESSAGE);
     }
     
     public void refresh() {

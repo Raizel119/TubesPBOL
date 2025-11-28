@@ -115,7 +115,7 @@ CREATE TABLE `request_pertemuan` (
   `jam_mulai` time NOT NULL,
   `jam_selesai` time NOT NULL,
   `keperluan` text NOT NULL,
-  `status` enum('PENDING','DITERIMA','DITOLAK') DEFAULT 'PENDING',
+  `status` enum('PENDING','DITERIMA','DITOLAK','N/A') DEFAULT 'PENDING',
   `alasan_penolakan` text DEFAULT NULL,
   `keterangan_dosen` text DEFAULT NULL COMMENT 'Keterangan tambahan dari dosen saat menerima request',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
