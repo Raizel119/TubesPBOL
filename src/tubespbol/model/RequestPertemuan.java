@@ -6,8 +6,8 @@ package tubespbol.model;
 
 /**
  *
- * @author ASUS
+ * @author Agnes Redyna
  */
-public class Jadwal{
+public class RequestPertemuan {
     
 }

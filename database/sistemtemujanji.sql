@@ -104,57 +104,6 @@ INSERT INTO `jadwal_mengajar` (`id`, `id_dosen`, `hari`, `mata_kuliah`, `ruangan
 -- --------------------------------------------------------
 
 --
--- Table structure for table `master_dosen`
---
-
-CREATE TABLE `master_dosen` (
-  `id_dosen` varchar(8) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `prodi` varchar(50) NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `master_dosen`
---
-
-INSERT INTO `master_dosen` (`id_dosen`, `nama`, `prodi`, `created_at`) VALUES
-('11223344', 'Dr. Ahmad Dahlan', 'Sistem Informasi', '2025-11-16 08:54:45'),
-('12345678', 'Dr. Budi Santoso', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('55667788', 'Dr. Rina Wahyuni', 'Teknik Komputer', '2025-11-16 08:54:45'),
-('87654321', 'Prof. Siti Nurhaliza', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('99887766', 'Prof. Dedi Kurniawan', 'Sistem Informasi', '2025-11-16 08:54:45');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `master_mahasiswa`
---
-
-CREATE TABLE `master_mahasiswa` (
-  `nim` varchar(10) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `prodi` varchar(50) NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `master_mahasiswa`
---
-
-INSERT INTO `master_mahasiswa` (`nim`, `nama`, `prodi`, `created_at`) VALUES
-('2021110001', 'Ahmad Rizki Pratama', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('2021110002', 'Siti Aminah', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('2021110003', 'Budi Hartono', 'Sistem Informasi', '2025-11-16 08:54:45'),
-('2022110001', 'Dewi Kusuma', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('2022110002', 'Eko Saputra', 'Sistem Informasi', '2025-11-16 08:54:45'),
-('2022110003', 'Andi Wijaya', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('2023110001', 'Linda Susanti', 'Sistem Informasi', '2025-11-16 08:54:45'),
-('2023110002', 'Rudi Hermawan', 'Teknik Komputer', '2025-11-16 08:54:45');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `request_pertemuan`
 --
 
@@ -235,6 +184,8 @@ DELIMITER ;
 --
 -- Table structure for table `users_dosen`
 --
+-- Catatan: Tabel ini sekarang berfungsi sebagai tabel master dan user
+--
 
 CREATE TABLE `users_dosen` (
   `id_dosen` varchar(8) NOT NULL,
@@ -257,6 +208,8 @@ INSERT INTO `users_dosen` (`id_dosen`, `nama`, `password`, `prodi`, `created_at`
 
 --
 -- Table structure for table `users_mahasiswa`
+--
+-- Catatan: Tabel ini sekarang berfungsi sebagai tabel master dan user
 --
 
 CREATE TABLE `users_mahasiswa` (
@@ -311,7 +264,7 @@ CREATE TABLE `view_request_detail` (
 ,`jam_mulai` time
 ,`jam_selesai` time
 ,`keperluan` text
-,`status` enum('PENDING','DITERIMA','DITOLAK')
+,`status` enum('PENDING','DITERIMA','DITOLAK','N/A')
 ,`alasan_penolakan` text
 ,`created_at` timestamp
 ,`updated_at` timestamp
@@ -333,7 +286,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `view_request_detail`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_request_detail`  AS SELECT `r`.`id` AS `id`, `r`.`nim` AS `nim`, `m`.`nama` AS `nama_mahasiswa`, `m`.`prodi` AS `prodi_mahasiswa`, `r`.`id_dosen` AS `id_dosen`, `d`.`nama` AS `nama_dosen`, `d`.`prodi` AS `prodi_dosen`, `r`.`tanggal` AS `tanggal`, `r`.`jam_mulai` AS `jam_mulai`, `r`.`jam_selesai` AS `jam_selesai`, `r`.`keperluan` AS `keperluan`, `r`.`status` AS `status`, `r`.`alasan_penolakan` AS `alasan_penolakan`, `r`.`created_at` AS `created_at`, `r`.`updated_at` AS `updated_at` FROM ((`request_pertemuan` `r` join `master_mahasiswa` `m` on(`r`.`nim` = `m`.`nim`)) join `master_dosen` `d` on(`r`.`id_dosen` = `d`.`id_dosen`))  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_request_detail`  AS SELECT `r`.`id` AS `id`, `r`.`nim` AS `nim`, `m`.`nama` AS `nama_mahasiswa`, `m`.`prodi` AS `prodi_mahasiswa`, `r`.`id_dosen` AS `id_dosen`, `d`.`nama` AS `nama_dosen`, `d`.`prodi` AS `prodi_dosen`, `r`.`tanggal` AS `tanggal`, `r`.`jam_mulai` AS `jam_mulai`, `r`.`jam_selesai` AS `jam_selesai`, `r`.`keperluan` AS `keperluan`, `r`.`status` AS `status`, `r`.`alasan_penolakan` AS `alasan_penolakan`, `r`.`created_at` AS `created_at`, `r`.`updated_at` AS `updated_at` FROM ((`request_pertemuan` `r` join `users_mahasiswa` `m` on(`r`.`nim` = `m`.`nim`)) join `users_dosen` `d` on(`r`.`id_dosen` = `d`.`id_dosen`))  ;
 
 --
 -- Indexes for dumped tables
@@ -352,18 +305,6 @@ ALTER TABLE `agenda_dosen`
 ALTER TABLE `jadwal_mengajar`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_dosen_hari` (`id_dosen`,`hari`);
-
---
--- Indexes for table `master_dosen`
---
-ALTER TABLE `master_dosen`
-  ADD PRIMARY KEY (`id_dosen`);
-
---
--- Indexes for table `master_mahasiswa`
---
-ALTER TABLE `master_mahasiswa`
-  ADD PRIMARY KEY (`nim`);
 
 --
 -- Indexes for table `request_pertemuan`
@@ -416,32 +357,21 @@ ALTER TABLE `request_pertemuan`
 -- Constraints for table `agenda_dosen`
 --
 ALTER TABLE `agenda_dosen`
-  ADD CONSTRAINT `agenda_dosen_ibfk_1` FOREIGN KEY (`id_dosen`) REFERENCES `master_dosen` (`id_dosen`) ON DELETE CASCADE;
+  ADD CONSTRAINT `agenda_dosen_ibfk_1` FOREIGN KEY (`id_dosen`) REFERENCES `users_dosen` (`id_dosen`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `jadwal_mengajar`
 --
 ALTER TABLE `jadwal_mengajar`
-  ADD CONSTRAINT `jadwal_mengajar_ibfk_1` FOREIGN KEY (`id_dosen`) REFERENCES `master_dosen` (`id_dosen`) ON DELETE CASCADE;
+  ADD CONSTRAINT `jadwal_mengajar_ibfk_1` FOREIGN KEY (`id_dosen`) REFERENCES `users_dosen` (`id_dosen`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `request_pertemuan`
 --
 ALTER TABLE `request_pertemuan`
-  ADD CONSTRAINT `request_pertemuan_ibfk_1` FOREIGN KEY (`nim`) REFERENCES `master_mahasiswa` (`nim`) ON DELETE CASCADE,
-  ADD CONSTRAINT `request_pertemuan_ibfk_2` FOREIGN KEY (`id_dosen`) REFERENCES `master_dosen` (`id_dosen`) ON DELETE CASCADE;
+  ADD CONSTRAINT `request_pertemuan_ibfk_1` FOREIGN KEY (`nim`) REFERENCES `users_mahasiswa` (`nim`) ON DELETE CASCADE,
+  ADD CONSTRAINT `request_pertemuan_ibfk_2` FOREIGN KEY (`id_dosen`) REFERENCES `users_dosen` (`id_dosen`) ON DELETE CASCADE;
 
---
--- Constraints for table `users_dosen`
---
-ALTER TABLE `users_dosen`
-  ADD CONSTRAINT `users_dosen_ibfk_1` FOREIGN KEY (`id_dosen`) REFERENCES `master_dosen` (`id_dosen`) ON DELETE CASCADE;
-
---
--- Constraints for table `users_mahasiswa`
---
-ALTER TABLE `users_mahasiswa`
-  ADD CONSTRAINT `users_mahasiswa_ibfk_1` FOREIGN KEY (`nim`) REFERENCES `master_mahasiswa` (`nim`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

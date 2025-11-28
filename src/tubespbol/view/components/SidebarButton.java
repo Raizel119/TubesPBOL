@@ -10,25 +10,28 @@ public class SidebarButton extends JPanel {
     private JLabel iconLabel;
     private JLabel textLabel;
     private boolean hovered = false;
+    private boolean selected = false;
 
-    private final Color normalColor = new Color(31, 78, 121);
-    private final Color hoverColor = new Color(42, 107, 181);
+    private final Color normalColor = new Color(255, 255, 255, 20);
+    private final Color hoverColor = new Color(255, 255, 255, 40);
+    private final Color selectedColor = new Color(255, 255, 255, 60);
 
     public SidebarButton(String text, String iconPath) {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 15, 7)); // Padding bawah dikurangi biar centering lebih baik
-        setPreferredSize(new Dimension(180, 44));
-        setBackground(normalColor);
+        setLayout(new FlowLayout(FlowLayout.LEFT, 12, 10));
+        setPreferredSize(new Dimension(220, 45));
+        setOpaque(false);
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Load and resize icon, ALWAYS give fixed size (e.g. 28x28) for consistent look
-        ImageIcon icon = getIconResized(iconPath, 28, 28);
+        // Load and resize icon, ALWAYS give fixed size (e.g. 24x24) for consistent look
+        ImageIcon icon = getIconResized(iconPath, 24, 24);
 
         iconLabel = new JLabel(icon);
         textLabel = new JLabel(text);
-        textLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        textLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
         textLabel.setForeground(Color.WHITE);
 
         add(iconLabel);
-        add(Box.createHorizontalStrut(6)); // Space antara ikon & teks
+        add(Box.createHorizontalStrut(8));
         add(textLabel);
 
         addMouseListener(new java.awt.event.MouseAdapter() {
@@ -60,7 +63,24 @@ public class SidebarButton extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        setBackground(hovered ? hoverColor : normalColor);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        // Draw rounded background
+        if (selected) {
+            g2.setColor(selectedColor);
+        } else if (hovered) {
+            g2.setColor(hoverColor);
+        } else {
+            g2.setColor(normalColor);
+        }
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+        
         super.paintComponent(g);
+    }
+    
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        repaint();
     }
 }
