@@ -1,20 +1,19 @@
 package tubespbol.view;
 
-import tubespbol.service.UserService;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Map;
+import java.awt.event.ActionListener;
 
 public class LoginForm extends JFrame {
     
-    private UserService userService;
+    // Komponen Input dijadikan Global agar bisa diakses Controller
+    private JTextField txtUser;
+    private JPasswordField txtPass;
+    private JComboBox<String> cmbRole;
+    private JButton btnLogin;
 
     public LoginForm() {
-        
-        // Initialize service
-        userService = new UserService();
-
         // ========== FLATLAF (modern) ==========
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -36,7 +35,6 @@ public class LoginForm extends JFrame {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // Gradient diagonal yang lebih modern
                 GradientPaint gp = new GradientPaint(
                         0, 0, new Color(20, 60, 140),
                         getWidth(), getHeight(), new Color(46, 134, 193)
@@ -44,7 +42,6 @@ public class LoginForm extends JFrame {
                 g2.setPaint(gp);
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 
-                // Tambahan efek circle di background
                 g2.setColor(new Color(255, 255, 255, 15));
                 g2.fillOval(-50, -50, 200, 200);
                 g2.fillOval(getWidth() - 150, getHeight() - 150, 200, 200);
@@ -61,27 +58,22 @@ public class LoginForm extends JFrame {
         innerCard.setLayout(new GridBagLayout());
         innerCard.setOpaque(true);
 
-        // ========== OUTER CARD (ROUNDED WRAPPER WITH SHADOW) ==========
         JPanel outerCard = wrapRoundedWithShadow(innerCard, 20);
-
-        // Add outer card to background
         GridBagConstraints gbcCard = new GridBagConstraints();
         bg.add(outerCard, gbcCard);
 
-        // ========== GRIDBAG FOR FORM INSIDE INNER CARD ==========
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 5, 8, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
 
-        // ========== LOGO/ICON ==========
-        JLabel lblIcon = new JLabel("\uD83D\uDCC5"); // Calendar emoji
+        // ========== LOGO & TITLE ==========
+        JLabel lblIcon = new JLabel("\uD83D\uDCC5"); 
         lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
         lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 0;
         innerCard.add(lblIcon, gbc);
 
-        // ========== TITLE ==========
         JLabel lblTitle = new JLabel("SIGMA");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
         lblTitle.setForeground(new Color(31, 78, 121));
@@ -90,7 +82,6 @@ public class LoginForm extends JFrame {
         gbc.insets = new Insets(5, 5, 3, 5);
         innerCard.add(lblTitle, gbc);
         
-        // ========== SUBTITLE ==========
         JLabel lblSubtitle = new JLabel("Sistem Informasi General Manajemen Agreement");
         lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         lblSubtitle.setForeground(new Color(120, 120, 120));
@@ -101,40 +92,38 @@ public class LoginForm extends JFrame {
         
         gbc.insets = new Insets(8, 5, 8, 5);
 
-        // ========== USERNAME ==========
+        // ========== INPUT FIELDS ==========
         JLabel lblUser = new JLabel("Username");
         lblUser.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblUser.setForeground(new Color(60, 60, 60));
-        JTextField txtUser = new JTextField();
+        txtUser = new JTextField();
         txtUser.putClientProperty("JTextField.placeholderText", "Masukkan Username");
         txtUser.setPreferredSize(new Dimension(0, 35));
 
         gbc.gridy = 3; innerCard.add(lblUser, gbc);
         gbc.gridy = 4; innerCard.add(txtUser, gbc);
 
-        // ========== PASSWORD ==========
         JLabel lblPass = new JLabel("Password");
         lblPass.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblPass.setForeground(new Color(60, 60, 60));
-        JPasswordField txtPass = new JPasswordField();
+        txtPass = new JPasswordField();
         txtPass.putClientProperty("JTextField.placeholderText", "Masukkan Password");
         txtPass.setPreferredSize(new Dimension(0, 35));
 
         gbc.gridy = 5; innerCard.add(lblPass, gbc);
         gbc.gridy = 6; innerCard.add(txtPass, gbc);
 
-        // ========== ROLE ==========
         JLabel lblRole = new JLabel("Login sebagai");
         lblRole.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblRole.setForeground(new Color(60, 60, 60));
-        JComboBox<String> cmbRole = new JComboBox<>(new String[]{"Mahasiswa", "Dosen"});
+        cmbRole = new JComboBox<>(new String[]{"Mahasiswa", "Dosen"});
         cmbRole.setPreferredSize(new Dimension(0, 35));
 
         gbc.gridy = 7; innerCard.add(lblRole, gbc);
         gbc.gridy = 8; innerCard.add(cmbRole, gbc);
 
         // ========== LOGIN BUTTON ==========
-        JButton btnLogin = new JButton("Login");
+        btnLogin = new JButton("Login");
         btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 15));
         btnLogin.setPreferredSize(new Dimension(0, 42));
         btnLogin.setBackground(new Color(46, 134, 193));
@@ -143,90 +132,38 @@ public class LoginForm extends JFrame {
         btnLogin.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Hover effect
-        btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnLogin.setBackground(new Color(31, 97, 141));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnLogin.setBackground(new Color(46, 134, 193));
-            }
-        });
-
         gbc.gridy = 9;
         gbc.insets = new Insets(15, 5, 8, 5);
         innerCard.add(btnLogin, gbc);
 
-        // ========== LOGIN ACTION (UPDATED WITH DATABASE) ==========
-        btnLogin.addActionListener(e -> {
-            String user = txtUser.getText().trim();
-            String pass = new String(txtPass.getPassword());
-            String role = cmbRole.getSelectedItem().toString();
-
-            // Validate input
-            if (user.isEmpty() || pass.isEmpty()) {
-                JOptionPane.showMessageDialog(this, 
-                    "Username dan Password tidak boleh kosong!",
-                    "Input Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Show loading
-            btnLogin.setEnabled(false);
-            btnLogin.setText("Loading...");
-
-            // Authenticate with database using SwingWorker for better UX
-            SwingWorker<Map<String, String>, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Map<String, String> doInBackground() {
-                    return userService.login(user, pass, role);
-                }
-
-                @Override
-                protected void done() {
-                    try {
-                        Map<String, String> userData = get();
-                        
-                        if (userData != null) {
-                            // Login successful
-                            String userId = userData.get("id");
-                            String nama = userData.get("nama");
-                            
-                            // Open dashboard based on role
-                            if (role.equals("Mahasiswa")) {
-                                new DashboardMahasiswa(userId, userData);
-                            } else if (role.equals("Dosen")) {
-                                new DashboardDosen(userId, userData);
-                            }
-                            dispose();
-                        } else {
-                            // Login failed
-                            btnLogin.setEnabled(true);
-                            btnLogin.setText("Login");
-                            
-                            JOptionPane.showMessageDialog(LoginForm.this, 
-                                "Username/Password salah atau role tidak sesuai!\n\n" +
-                                "Untuk testing, gunakan:\n" +
-                                "Dosen: 12345678 / password123\n" +
-                                "Mahasiswa: 2021110001 / password123",
-                                "Login Gagal", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (Exception ex) {
-                        btnLogin.setEnabled(true);
-                        btnLogin.setText("Login");
-                        JOptionPane.showMessageDialog(LoginForm.this, 
-                            "Terjadi kesalahan: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            };
-            worker.execute();
-        });
-
-        setVisible(true);
+        // HAPUS SEMUA LOGIKA ACTION LISTENER DARI SINI
+        // Controller yang akan memasangnya nanti
     }
 
-    // ===== WRAP PANEL MENJADI ROUNDED CARD WITH SHADOW =====
+    // ===== METHOD PENTING UNTUK CONTROLLER =====
+    
+    public String getUsername() {
+        return txtUser.getText().trim();
+    }
+
+    public String getPassword() {
+        return new String(txtPass.getPassword());
+    }
+
+    public String getRole() {
+        return cmbRole.getSelectedItem().toString();
+    }
+    
+    public JButton getBtnLogin() {
+        return btnLogin;
+    }
+
+    // Controller akan memanggil ini untuk memasang "telinga"
+    public void setLoginListener(ActionListener listener) {
+        btnLogin.addActionListener(listener);
+    }
+
+    // ===== UI HELPER =====
     private JPanel wrapRoundedWithShadow(JPanel panel, int radius) {
         return new JPanel(new BorderLayout()) {
             {
@@ -234,29 +171,19 @@ public class LoginForm extends JFrame {
                 setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 add(panel, BorderLayout.CENTER);
             }
-
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                // Shadow effect
                 g2.setColor(new Color(0, 0, 0, 30));
                 for (int i = 0; i < 5; i++) {
                     g2.fillRoundRect(10 - i, 10 - i, getWidth() - 20 + (i * 2), 
                                    getHeight() - 20 + (i * 2), radius + i, radius + i);
                 }
-                
-                // White card
                 g2.setColor(Color.WHITE);
                 g2.fillRoundRect(10, 10, getWidth() - 20, getHeight() - 20, radius, radius);
                 super.paintComponent(g);
             }
         };
-    }
-    
-    // ========== MAIN METHOD FOR TESTING ==========
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new LoginForm());
     }
 }
