@@ -1,11 +1,13 @@
 package tubespbol.view.components;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DatePicker extends JPanel {
     private JTextField dateField;
@@ -15,7 +17,7 @@ public class DatePicker extends JPanel {
     
     public DatePicker() {
         calendar = Calendar.getInstance();
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Format SQL
         
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(250, 28));
@@ -25,6 +27,7 @@ public class DatePicker extends JPanel {
         dateField.setEditable(false);
         dateField.setText(dateFormat.format(calendar.getTime()));
         dateField.setPreferredSize(new Dimension(200, 28));
+        dateField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         
         // Tombol kalender
         calendarButton = new JButton("📅");
@@ -41,7 +44,7 @@ public class DatePicker extends JPanel {
     private void showCalendarDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Pilih Tanggal", true);
         dialog.setLayout(new BorderLayout());
-        dialog.setSize(320, 350);
+        dialog.setSize(340, 380); // Ukuran sedikit diperlebar agar muat 7 kolom
         dialog.setLocationRelativeTo(this);
         
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
@@ -60,6 +63,8 @@ public class DatePicker extends JPanel {
         nextMonth.setBackground(new Color(46, 134, 193));
         prevMonth.setForeground(Color.WHITE);
         nextMonth.setForeground(Color.WHITE);
+        prevMonth.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        nextMonth.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         // ComboBox untuk bulan dan tahun
         String[] months = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", 
@@ -83,19 +88,21 @@ public class DatePicker extends JPanel {
         headerPanel.add(monthYearPanel, BorderLayout.CENTER);
         headerPanel.add(nextMonth, BorderLayout.EAST);
         
-        // Panel untuk hari dalam seminggu
-        JPanel daysHeaderPanel = new JPanel(new GridLayout(1, 7, 2, 2));
+        // Panel Header Hari (Min, Sen, ...)
+        // PERBAIKAN: Pastikan GridLayout 7 Kolom
+        JPanel daysHeaderPanel = new JPanel(new GridLayout(1, 7, 2, 2)); 
         daysHeaderPanel.setBackground(Color.WHITE);
         String[] dayNames = {"Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"};
         for (String day : dayNames) {
             JLabel label = new JLabel(day, SwingConstants.CENTER);
-            label.setFont(new Font("Segoe UI", Font.BOLD, 11));
+            label.setFont(new Font("Segoe UI", Font.BOLD, 12));
             label.setForeground(new Color(31, 78, 121));
             daysHeaderPanel.add(label);
         }
         
-        // Panel untuk tanggal
-        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 2, 2));
+        // Panel Tanggal
+        // PERBAIKAN: Pastikan GridLayout 7 Kolom (0 rows means auto, 7 cols fixed)
+        JPanel daysPanel = new JPanel(new GridLayout(0, 7, 2, 2));
         daysPanel.setBackground(Color.WHITE);
         
         // Fungsi untuk update kalender
@@ -103,17 +110,21 @@ public class DatePicker extends JPanel {
             daysPanel.removeAll();
             
             Calendar tempCal = (Calendar) calendar.clone();
-            tempCal.set(Calendar.DAY_OF_MONTH, 1);
+            tempCal.set(Calendar.DAY_OF_MONTH, 1); // Set ke tanggal 1
             
-            int firstDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK) - 1;
+            // Hitung offset hari (Minggu = 1, Sabtu = 7 di Java)
+            // Kita mau Minggu jadi index 0
+            int dayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK); // 1 (Sun) .. 7 (Sat)
+            int emptyCells = dayOfWeek - 1; // Jadi 0 (Sun) .. 6 (Sat)
+            
             int daysInMonth = tempCal.getActualMaximum(Calendar.DAY_OF_MONTH);
             
-            // Empty cells sebelum tanggal pertama
-            for (int i = 0; i < firstDayOfWeek; i++) {
+            // Isi sel kosong di awal
+            for (int i = 0; i < emptyCells; i++) {
                 daysPanel.add(new JLabel(""));
             }
             
-            // Tombol untuk setiap tanggal
+            // Isi tombol tanggal
             for (int day = 1; day <= daysInMonth; day++) {
                 JButton dayButton = new JButton(String.valueOf(day));
                 dayButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -122,11 +133,8 @@ public class DatePicker extends JPanel {
                 dayButton.setBackground(Color.WHITE);
                 dayButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 
-                // Highlight hari ini
-                Calendar today = Calendar.getInstance();
-                if (day == calendar.get(Calendar.DAY_OF_MONTH) &&
-                    calendar.get(Calendar.MONTH) == tempCal.get(Calendar.MONTH) &&
-                    calendar.get(Calendar.YEAR) == tempCal.get(Calendar.YEAR)) {
+                // Highlight hari yang terpilih
+                if (day == calendar.get(Calendar.DAY_OF_MONTH)) {
                     dayButton.setBackground(new Color(46, 134, 193));
                     dayButton.setForeground(Color.WHITE);
                     dayButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -135,27 +143,12 @@ public class DatePicker extends JPanel {
                 final int selectedDay = day;
                 dayButton.addActionListener(e -> {
                     calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
+                    // Update bulan dan tahun dari combo box jika user pindah bulan tapi klik tanggal
+                    calendar.set(Calendar.MONTH, monthCombo.getSelectedIndex());
+                    calendar.set(Calendar.YEAR, (Integer) yearCombo.getSelectedItem());
+                    
                     dateField.setText(dateFormat.format(calendar.getTime()));
                     dialog.dispose();
-                });
-                
-                // Hover effect
-                dayButton.addMouseListener(new MouseAdapter() {
-                    Color originalBg = dayButton.getBackground();
-                    
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        if (originalBg.equals(Color.WHITE)) {
-                            dayButton.setBackground(new Color(230, 240, 250));
-                        }
-                    }
-                    
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        if (originalBg.equals(Color.WHITE)) {
-                            dayButton.setBackground(Color.WHITE);
-                        }
-                    }
                 });
                 
                 daysPanel.add(dayButton);
@@ -165,7 +158,7 @@ public class DatePicker extends JPanel {
             daysPanel.repaint();
         };
         
-        // Event listeners untuk navigasi
+        // Event listeners
         prevMonth.addActionListener(e -> {
             int month = monthCombo.getSelectedIndex();
             if (month == 0) {
@@ -174,6 +167,7 @@ public class DatePicker extends JPanel {
             } else {
                 monthCombo.setSelectedIndex(month - 1);
             }
+            // Trigger update via combo listener
         });
         
         nextMonth.addActionListener(e -> {
@@ -196,7 +190,6 @@ public class DatePicker extends JPanel {
             updateCalendar.run();
         });
         
-        // Panel container untuk days header dan days
         JPanel calendarPanel = new JPanel(new BorderLayout(0, 5));
         calendarPanel.setBackground(Color.WHITE);
         calendarPanel.add(daysHeaderPanel, BorderLayout.NORTH);
@@ -207,8 +200,9 @@ public class DatePicker extends JPanel {
         
         // Tombol tutup
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(Color.WHITE);
         JButton closeButton = new JButton("Tutup");
-        closeButton.setBackground(new Color(220, 53, 69));
+        closeButton.setBackground(new Color(231, 76, 60));
         closeButton.setForeground(Color.WHITE);
         closeButton.setFocusPainted(false);
         closeButton.addActionListener(e -> dialog.dispose());
@@ -217,7 +211,7 @@ public class DatePicker extends JPanel {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
         dialog.add(mainPanel);
-        updateCalendar.run();
+        updateCalendar.run(); // Load awal
         dialog.setVisible(true);
     }
     
@@ -228,9 +222,5 @@ public class DatePicker extends JPanel {
     public void setDate(Date date) {
         calendar.setTime(date);
         dateField.setText(dateFormat.format(date));
-    }
-    
-    public String getDateString() {
-        return dateField.getText();
     }
 }

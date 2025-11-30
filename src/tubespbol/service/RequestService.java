@@ -14,11 +14,11 @@ public class RequestService {
      * Submit meeting request from mahasiswa
      */
     public String ajukanRequest(String nim, String idDosen, String tanggal, 
-                               String jamMulai, String jamSelesai, String keperluan) {
+                               String jamMulai, String jamSelesai, String keperluan) throws SQLException {
+        
         Connection conn = null;
         try {
             conn = Database.getConnection();
-            if (conn == null) return null;
             
             String query = "INSERT INTO request_pertemuan (nim, id_dosen, tanggal, jam_mulai, jam_selesai, keperluan, status) " +
                           "VALUES (?, ?, ?, ?, ?, ?, 'PENDING')";
@@ -29,7 +29,7 @@ public class RequestService {
             stmt.setString(4, jamMulai);
             stmt.setString(5, jamSelesai);
             stmt.setString(6, keperluan);
-            stmt.executeUpdate();
+            stmt.executeUpdate(); 
             
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
@@ -39,8 +39,6 @@ public class RequestService {
                 return requestId;
             }
             stmt.close();
-        } catch (SQLException e) {
-            System.out.println("✗ Error ajukan request: " + e.getMessage());
         } finally {
             Database.closeConnection(conn);
         }

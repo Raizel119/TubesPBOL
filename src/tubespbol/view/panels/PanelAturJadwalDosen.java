@@ -83,12 +83,12 @@ public class PanelAturJadwalDosen extends JPanel {
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
-        JLabel labelJudul = new JLabel("ATUR JADWAL KETERSEDIAAN");
+        JLabel labelJudul = new JLabel("KELOLA AGENDA PRIBADI");
         labelJudul.setFont(new Font("Arial", Font.BOLD, 24));
         labelJudul.setForeground(Color.WHITE);
         labelJudul.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        JLabel labelDeskripsi = new JLabel("Kelola jadwal dan agenda ketersediaan Anda untuk pertemuan dengan mahasiswa");
+        JLabel labelDeskripsi = new JLabel("Kelola agenda pribadi Anda agar tidak bisa dipilih mahasiswa.");
         labelDeskripsi.setFont(new Font("Arial", Font.PLAIN, 12));
         labelDeskripsi.setForeground(new Color(230, 230, 230));
         labelDeskripsi.setAlignmentX(Component.LEFT_ALIGNMENT);
