@@ -29,14 +29,14 @@ public class LoginController {
         public void actionPerformed(ActionEvent e) {
             try {
                 // 1. Ambil data dari View
-                String user = view.getUsername();
+                String user = view.getID();
                 String pass = view.getPassword();
                 String role = view.getRole();
 
                 // 2. Validasi input
                 if (user.isEmpty() || pass.isEmpty()) {
                     JOptionPane.showMessageDialog(view, 
-                        "Username dan Password tidak boleh kosong!", 
+                        "ID User dan Password tidak boleh kosong!", 
                         "Input Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -70,10 +70,7 @@ public class LoginController {
                             } else {
                                 // === LOGIN GAGAL (PESAN ORIGINAL DIKEMBALIKAN) ===
                                 JOptionPane.showMessageDialog(view, 
-                                    "Username/Password salah atau role tidak sesuai!\n\n" +
-                                    "Untuk testing, gunakan:\n" +
-                                    "Dosen: 12345678 / password123\n" +
-                                    "Mahasiswa: 2021110001 / password123",
+                                    "Username/Password salah atau role tidak sesuai!\n\n",
                                     "Login Gagal", JOptionPane.ERROR_MESSAGE);
                             }
                         } catch (Exception ex) {

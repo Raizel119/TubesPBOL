@@ -1,6 +1,6 @@
 package tubespbol.service;
 
-import tubespbol.model.Database;
+import tubespbol.util.Database;
 import java.sql.*;
 import java.util.*;
 import java.time.LocalDate;

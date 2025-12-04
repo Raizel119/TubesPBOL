@@ -7,6 +7,7 @@ import tubespbol.service.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import tubespbol.controller.LoginController;
 
 public class DashboardMahasiswa extends JFrame {
 
@@ -161,7 +162,9 @@ public class DashboardMahasiswa extends JFrame {
                 
                 if (confirm == JOptionPane.YES_OPTION) {
                     dispose();
-                    new LoginForm();
+                    LoginForm loginForm = new LoginForm();
+                    new LoginController(loginForm);
+                    loginForm.setVisible(true);
                 }
             }
         });

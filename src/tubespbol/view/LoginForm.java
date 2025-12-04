@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginForm extends JFrame {
     
@@ -12,6 +14,9 @@ public class LoginForm extends JFrame {
     private JPasswordField txtPass;
     private JComboBox<String> cmbRole;
     private JButton btnLogin;
+    
+    // Variabel untuk menyimpan karakter default echo char (biasanya '*')
+    private char defaultEchoChar; 
 
     public LoginForm() {
         // ========== FLATLAF (modern) ==========
@@ -68,7 +73,7 @@ public class LoginForm extends JFrame {
         gbc.gridx = 0;
 
         // ========== LOGO & TITLE ==========
-        JLabel lblIcon = new JLabel("\uD83D\uDCC5"); 
+        JLabel lblIcon = new JLabel("📅"); // Icon diubah ke yang lebih relevan
         lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
         lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 0;
@@ -93,11 +98,11 @@ public class LoginForm extends JFrame {
         gbc.insets = new Insets(8, 5, 8, 5);
 
         // ========== INPUT FIELDS ==========
-        JLabel lblUser = new JLabel("Username");
+        JLabel lblUser = new JLabel("ID");
         lblUser.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblUser.setForeground(new Color(60, 60, 60));
         txtUser = new JTextField();
-        txtUser.putClientProperty("JTextField.placeholderText", "Masukkan Username");
+        txtUser.putClientProperty("JTextField.placeholderText", "Masukkan ID User");
         txtUser.setPreferredSize(new Dimension(0, 35));
 
         gbc.gridy = 3; innerCard.add(lblUser, gbc);
@@ -106,9 +111,16 @@ public class LoginForm extends JFrame {
         JLabel lblPass = new JLabel("Password");
         lblPass.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblPass.setForeground(new Color(60, 60, 60));
+        
         txtPass = new JPasswordField();
         txtPass.putClientProperty("JTextField.placeholderText", "Masukkan Password");
         txtPass.setPreferredSize(new Dimension(0, 35));
+        
+        // Simpan karakter echo char default (*)
+        defaultEchoChar = txtPass.getEchoChar();
+
+        // Panggil helper untuk menambahkan tombol mata
+        addPasswordShowHideToggle(txtPass);
 
         gbc.gridy = 5; innerCard.add(lblPass, gbc);
         gbc.gridy = 6; innerCard.add(txtPass, gbc);
@@ -135,14 +147,72 @@ public class LoginForm extends JFrame {
         gbc.gridy = 9;
         gbc.insets = new Insets(15, 5, 8, 5);
         innerCard.add(btnLogin, gbc);
-
-        // HAPUS SEMUA LOGIKA ACTION LISTENER DARI SINI
-        // Controller yang akan memasangnya nanti
     }
+    
+    /**
+     * Helper method untuk menambahkan tombol show/hide password menggunakan
+     * fitur FlatLaf (trailingComponent).
+     */
+    private void addPasswordShowHideToggle(JPasswordField passwordField) {
+        // PERUBAHAN UTAMA: Tombol mata
+        JToggleButton showHideButton = new JToggleButton(new AbstractAction("👁️") {
+            // Gunakan AbstractAction agar mudah mengatur ikon dan teks
+            private final String SHOW_TEXT = "🙈";
+            private final String HIDE_TEXT = "👁️";
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                JToggleButton btn = (JToggleButton) e.getSource();
+                if (btn.isSelected()) {
+                    // Tampilkan Password: set echo char ke 0 (menampilkan teks)
+                    passwordField.setEchoChar((char) 0);
+                    btn.setText(SHOW_TEXT);
+                    btn.setToolTipText("Sembunyikan password");
+                } else {
+                    // Sembunyikan Password: set echo char ke default (*)
+                    passwordField.setEchoChar(defaultEchoChar);
+                    btn.setText(HIDE_TEXT);
+                    btn.setToolTipText("Tampilkan password");
+                }
+            }
+        });
+
+        // Pengaturan Tampilan Tombol
+        showHideButton.setFocusPainted(false);
+        showHideButton.setMargin(new Insets(2, 5, 2, 5));
+        showHideButton.setOpaque(false);
+        showHideButton.setBorderPainted(false);
+        showHideButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        showHideButton.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
+        showHideButton.setForeground(new Color(100, 100, 100)); // Warna abu-abu
+        showHideButton.setToolTipText("Tampilkan password");
+
+        // Masukkan tombol ke JPasswordField (fitur FlatLaf)
+        passwordField.putClientProperty("JTextField.trailingComponent", showHideButton);
+        // Atur agar tombol tidak menghabiskan padding
+        passwordField.putClientProperty("JComponent.minimumWidth", 0);
+        
+        // Tambahkan hover effect manual karena tombol berada di dalam JPasswordField
+        showHideButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (!showHideButton.isSelected()) {
+                     showHideButton.setForeground(new Color(46, 134, 193));
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!showHideButton.isSelected()) {
+                    showHideButton.setForeground(new Color(100, 100, 100));
+                }
+            }
+        });
+    }
+
 
     // ===== METHOD PENTING UNTUK CONTROLLER =====
     
-    public String getUsername() {
+    public String getID() {
         return txtUser.getText().trim();
     }
 
@@ -178,7 +248,7 @@ public class LoginForm extends JFrame {
                 g2.setColor(new Color(0, 0, 0, 30));
                 for (int i = 0; i < 5; i++) {
                     g2.fillRoundRect(10 - i, 10 - i, getWidth() - 20 + (i * 2), 
-                                   getHeight() - 20 + (i * 2), radius + i, radius + i);
+                                     getHeight() - 20 + (i * 2), radius + i, radius + i);
                 }
                 g2.setColor(Color.WHITE);
                 g2.fillRoundRect(10, 10, getWidth() - 20, getHeight() - 20, radius, radius);

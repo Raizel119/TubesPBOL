@@ -1,7 +1,7 @@
 package tubespbol.view.panels;
 
 import tubespbol.service.RequestService;
-import tubespbol.model.Database;
+import tubespbol.util.Database;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

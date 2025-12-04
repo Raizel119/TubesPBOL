@@ -7,6 +7,7 @@ import tubespbol.view.components.SidebarButton;
 import tubespbol.view.panels.*;
 import tubespbol.service.*;
 import tubespbol.controller.PermintaanMasukController;
+import tubespbol.controller.LoginController;
 
 public class DashboardDosen extends JFrame {
 
@@ -174,7 +175,9 @@ public class DashboardDosen extends JFrame {
                 
                 if (confirm == JOptionPane.YES_OPTION) {
                     dispose();
-                    new LoginForm();
+                    LoginForm loginForm = new LoginForm();
+                    new LoginController(loginForm);
+                    loginForm.setVisible(true);
                 }
             }
         });

@@ -61,9 +61,19 @@ CREATE TABLE `users_dosen` (
 --
 
 INSERT INTO `users_dosen` (`id_dosen`, `nama`, `password`, `prodi`, `created_at`) VALUES
-('11223344', 'Dr. Ahmad Dahlan', 'password123', 'Sistem Informasi', '2025-11-16 08:54:45'),
-('12345678', 'Dr. Budi Santoso', 'password123', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('87654321', 'Prof. Siti Nurhaliza', 'password123', 'Teknik Informatika', '2025-11-16 08:54:45');
+('11223344', 'Dr. Ahmad Dahlan', 'ahmad2025', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('12345678', 'Dr. Budi Santoso', 'budi1234', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('87654321', 'Prof. Siti Nurhaliza', 'siti9876', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('22334455', 'Dr. Rina Kusuma, M.Kom', 'rina4455', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('33445566', 'Prof. Dr. Ir. Bambang Haryanto', 'bambang5566', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('44556677', 'Dr. Indah Permatasari, S.Kom., M.T.', 'indah6677', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('55667788', 'Dr. Muhammad Fauzi, M.Sc.', 'fauzi7788', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('66778899', 'Dr. Eng. Andi Prasetyo', 'andi8899', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('77889900', 'Dr. Fitri Wulandari, M.T.', 'fitri9900', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('88990011', 'Prof. Hendra Wijaya, Ph.D.', 'hendra0011', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('99001122', 'Dr. Lestari Ningrum, S.T., M.Kom.', 'lestari1122', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('10111213', 'Dr. Yoga Aditama, M.Sc.', 'yoga1213', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('11121314', 'Dr. Putri Maharani, M.Kom.', 'putri1314', 'Teknologi Informasi', '2025-11-16 08:54:45');
 
 -- --------------------------------------------------------
 
@@ -84,9 +94,38 @@ CREATE TABLE `users_mahasiswa` (
 --
 
 INSERT INTO `users_mahasiswa` (`nim`, `nama`, `password`, `prodi`, `created_at`) VALUES
-('2021110001', 'Ahmad Rizki Pratama', 'password123', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('2021110002', 'Siti Aminah', 'password123', 'Teknik Informatika', '2025-11-16 08:54:45'),
-('2022110001', 'Dewi Kusuma', 'password123', 'Teknik Informatika', '2025-11-16 08:54:45');
+('2021110001', 'Ahmad Rizki Pratama', 'rizki001', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2021110002', 'Siti Aminah', 'aminah002', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2021110003', 'Rifki Ramadhan', 'rifki003', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2021110004', 'Maya Sari', 'maya004', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2021110005', 'Hendra Gunawan', 'hendra005', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110001', 'Dewi Kusuma', 'dewi001', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110002', 'Reza Firmansyah', 'reza002', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110003', 'Nurul Hidayah', 'nurul003', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110004', 'Kevin Pratama', 'kevin004', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110005', 'Anisa Putri', 'anisa005', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110006', 'Bayu Setiawan', 'bayu006', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2022110007', 'Citra Dewi', 'citra007', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110001', 'Fauzan Hakim', 'fauzan001', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110002', 'Laila Nur Azizah', 'laila002', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110003', 'Dimas Prakoso', 'dimas003', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110004', 'Aulia Rahma', 'aulia004', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110005', 'Gilang Ramadhan', 'gilang005', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110006', 'Hasna Azzahra', 'hasna006', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110007', 'Iqbal Maulana', 'iqbal007', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110008', 'Jasmine Putri', 'jasmine008', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110009', 'Krisna Wijaya', 'krisna009', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2023110010', 'Linda Wahyuni', 'linda010', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110001', 'Farhan Abdullah', 'farhan001', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110002', 'Zahra Amalia', 'zahra002', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110003', 'Bima Sakti', 'bima003', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110004', 'Nabila Putri', 'nabila004', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110005', 'Oscar Ramadhan', 'oscar005', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110006', 'Putri Wulandari', 'putri006', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110007', 'Qori Alifah', 'qori007', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110008', 'Rama Aditya', 'rama008', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110009', 'Salma Azzahra', 'salma009', 'Teknologi Informasi', '2025-11-16 08:54:45'),
+('2024110010', 'Tegar Pratama', 'tegar010', 'Teknologi Informasi', '2025-11-16 08:54:45');
 
 -- --------------------------------------------------------
 
@@ -112,7 +151,16 @@ CREATE TABLE `agenda_dosen` (
 INSERT INTO `agenda_dosen` (`id`, `id_dosen`, `tanggal`, `jam_mulai`, `jam_selesai`, `judul`, `keterangan`, `created_at`) VALUES
 (1, '12345678', '2025-12-01', '12:00:00', '13:00:00', 'Istirahat & Sholat', 'Waktu istirahat siang', '2025-11-16 08:54:45'),
 (2, '12345678', '2025-12-02', '15:00:00', '17:00:00', 'Rapat Jurusan', 'Rapat evaluasi kurikulum', '2025-11-16 08:54:45'),
-(3, '12345678', '2025-12-03', '14:00:00', '15:00:00', 'Keperluan Pribadi', 'Urusan keluarga', '2025-11-16 08:54:45');
+(3, '12345678', '2025-12-03', '14:00:00', '15:00:00', 'Keperluan Pribadi', 'Urusan keluarga', '2025-11-16 08:54:45'),
+(4, '87654321', '2025-12-04', '10:00:00', '12:00:00', 'Seminar Nasional AI', 'Keynote speaker di seminar', '2025-11-16 08:54:45'),
+(5, '87654321', '2025-12-05', '13:00:00', '15:00:00', 'Workshop Machine Learning', 'Mengisi workshop untuk dosen', '2025-11-16 08:54:45'),
+(6, '11223344', '2025-12-06', '09:00:00', '11:00:00', 'Rapat Akreditasi', 'Persiapan dokumen akreditasi prodi', '2025-11-16 08:54:45'),
+(7, '11223344', '2025-12-09', '14:00:00', '16:00:00', 'Visitasi Industri', 'Kunjungan ke perusahaan partner', '2025-11-16 08:54:45'),
+(8, '22334455', '2025-12-10', '10:00:00', '12:00:00', 'Pelatihan Dosen', 'Pelatihan metode pembelajaran digital', '2025-11-16 08:54:45'),
+(9, '33445566', '2025-12-11', '13:00:00', '15:00:00', 'Rapat Senat', 'Rapat senat fakultas', '2025-11-16 08:54:45'),
+(10, '44556677', '2025-12-12', '08:00:00', '10:00:00', 'Sidang Skripsi', 'Penguji sidang mahasiswa', '2025-11-16 08:54:45'),
+(11, '55667788', '2025-12-13', '11:00:00', '13:00:00', 'Konsultasi Penelitian', 'Meeting dengan tim penelitian', '2025-11-16 08:54:45'),
+(12, '66778899', '2025-12-16', '14:00:00', '16:00:00', 'Peninjauan Lab', 'Inspeksi peralatan laboratorium', '2025-11-16 08:54:45');
 
 -- --------------------------------------------------------
 
@@ -148,7 +196,27 @@ INSERT INTO `jadwal_mengajar` (`id`, `id_dosen`, `hari`, `mata_kuliah`, `ruangan
 (10, '11223344', 'Selasa', 'Manajemen Proyek', 'Kelas A', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
 (11, '11223344', 'Rabu', 'Analisis Sistem', 'Kelas B', '08:00:00', '10:00:00', '2025-11-16 08:54:45'),
 (12, '11223344', 'Kamis', 'Sistem Informasi Manajemen', 'Kelas A', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
-(13, '11223344', 'Jumat', 'E-Business', 'Kelas B', '10:00:00', '12:00:00', '2025-11-16 08:54:45');
+(13, '11223344', 'Jumat', 'E-Business', 'Kelas B', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
+(14, '22334455', 'Senin', 'Jaringan Komputer', 'Lab 4', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
+(15, '22334455', 'Selasa', 'Keamanan Jaringan', 'Lab 4', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
+(16, '22334455', 'Rabu', 'Sistem Operasi', 'Lab 3', '15:00:00', '17:00:00', '2025-11-16 08:54:45'),
+(17, '22334455', 'Kamis', 'Administrasi Sistem', 'Lab 4', '08:00:00', '10:00:00', '2025-11-16 08:54:45'),
+(18, '33445566', 'Senin', 'Tata Kelola IT', 'Kelas C', '15:00:00', '17:00:00', '2025-11-16 08:54:45'),
+(19, '33445566', 'Selasa', 'Audit Sistem Informasi', 'Kelas C', '15:00:00', '17:00:00', '2025-11-16 08:54:45'),
+(20, '33445566', 'Kamis', 'Perencanaan Strategis SI', 'Kelas B', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
+(21, '33445566', 'Jumat', 'Enterprise Architecture', 'Kelas A', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
+(22, '44556677', 'Senin', 'Grafika Komputer', 'Lab 5', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
+(23, '44556677', 'Selasa', 'Computer Vision', 'Lab 5', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
+(24, '44556677', 'Rabu', 'Pengolahan Citra Digital', 'Lab 5', '08:00:00', '10:00:00', '2025-11-16 08:54:45'),
+(25, '44556677', 'Kamis', 'Multimedia', 'Lab 6', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
+(26, '55667788', 'Selasa', 'Sistem Pendukung Keputusan', 'Kelas D', '08:00:00', '10:00:00', '2025-11-16 08:54:45'),
+(27, '55667788', 'Rabu', 'Business Intelligence', 'Lab 2', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
+(28, '55667788', 'Kamis', 'Data Warehouse', 'Kelas D', '15:00:00', '17:00:00', '2025-11-16 08:54:45'),
+(29, '55667788', 'Jumat', 'Analitik Data', 'Lab 3', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
+(30, '66778899', 'Senin', 'Pemrograman Mobile', 'Lab 6', '08:00:00', '10:00:00', '2025-11-16 08:54:45'),
+(31, '66778899', 'Selasa', 'Cloud Computing', 'Lab 1', '13:00:00', '15:00:00', '2025-11-16 08:54:45'),
+(32, '66778899', 'Rabu', 'Internet of Things', 'Lab 4', '10:00:00', '12:00:00', '2025-11-16 08:54:45'),
+(33, '66778899', 'Jumat', 'Teknologi Blockchain', 'Lab 5', '10:00:00', '12:00:00', '2025-11-16 08:54:45');
 
 -- --------------------------------------------------------
 
@@ -289,13 +357,13 @@ ALTER TABLE `users_mahasiswa`
 -- AUTO_INCREMENT for table `agenda_dosen`
 --
 ALTER TABLE `agenda_dosen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `jadwal_mengajar`
 --
 ALTER TABLE `jadwal_mengajar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `request_pertemuan`

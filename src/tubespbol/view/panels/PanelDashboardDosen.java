@@ -1,3 +1,4 @@
+// tubespbol.view.panels.PanelDashboardDosen
 package tubespbol.view.panels;
 
 import tubespbol.service.JadwalService;
@@ -20,7 +21,7 @@ public class PanelDashboardDosen extends JPanel {
     private RequestService requestService;
     
     // Components
-    private JButton[] dayButtons;
+    private JButton[] dayButtons; 
     private JPanel jadwalListPanel;
     private LocalDate currentWeekStart;
     private int selectedDayIndex = -1;
@@ -42,8 +43,9 @@ public class PanelDashboardDosen extends JPanel {
         this.jadwalService = jadwalService;
         this.requestService = requestService;
         
-        // Get current week start (Monday)
-        this.currentWeekStart = getWeekStart(LocalDate.now());
+        // Get current week start (Sunday)
+        // PERUBAHAN: Memanggil getWeekStart untuk mencari hari MINGGU awal pekan
+        this.currentWeekStart = getWeekStart(LocalDate.now()); 
         
         initComponents();
         
@@ -223,7 +225,7 @@ public class PanelDashboardDosen extends JPanel {
         section.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         // Title - LEFT ALIGNED
-        JLabel lblTitle = new JLabel("Jadwal Kuliah");
+        JLabel lblTitle = new JLabel("Jadwal Kegiatan");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitle.setForeground(new Color(41, 128, 185));
         lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -232,15 +234,16 @@ public class PanelDashboardDosen extends JPanel {
         section.add(lblTitle);
         
         // Day buttons - CONSISTENT SPACING
-        JPanel daysPanel = new JPanel(new GridLayout(1, 5, 15, 0));
+        JPanel daysPanel = new JPanel(new GridLayout(1, 7, 10, 0)); 
         daysPanel.setBackground(new Color(236, 240, 245));
         daysPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         daysPanel.setPreferredSize(new Dimension(0, 92));
         
-        dayButtons = new JButton[5];
-        String[] dayNames = {"Sen", "Sel", "Rab", "Kam", "Jum"};
+        dayButtons = new JButton[7]; 
+        // PERUBAHAN: Nama hari dimulai dari Minggu (Index 0)
+        String[] dayNames = {"Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"};
         
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 7; i++) { 
             final int index = i;
             JButton btn = createDayButton(dayNames[i], "", false);
             btn.addActionListener(e -> selectDay(index));
@@ -402,20 +405,24 @@ public class PanelDashboardDosen extends JPanel {
         loadStats();
         
         LocalDate today = LocalDate.now();
-        int todayIndex = today.getDayOfWeek().getValue() - 1;
+        // PERUBAHAN: Menghitung index hari saat ini berdasarkan urutan Minggu=0, Senin=1, dst.
+        int todayIndex = (today.getDayOfWeek().getValue() % 7); // Minggu=0, Senin=1, dst.
         
-        if (todayIndex >= 0 && todayIndex < 5) {
+        if (todayIndex >= 0 && todayIndex < 7) { 
             selectDay(todayIndex);
         } else {
-            selectDay(0);
+            // Default ke hari Minggu (index 0)
+            selectDay(0); 
         }
     }
     
     private void updateDayButtons() {
-        String[] dayNames = {"Sen", "Sel", "Rab", "Kam", "Jum"};
+        // PERUBAHAN: Nama hari dimulai dari Minggu
+        String[] dayNames = {"Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"}; 
         
-        for (int i = 0; i < 5; i++) {
-            LocalDate date = currentWeekStart.plusDays(i);
+        for (int i = 0; i < 7; i++) { 
+            // currentWeekStart sudah diatur ke hari Minggu
+            LocalDate date = currentWeekStart.plusDays(i); 
             String dateStr = date.format(DateTimeFormatter.ofPattern("dd MMM", new Locale("id")));
             
             final int index = i;
@@ -435,19 +442,21 @@ public class PanelDashboardDosen extends JPanel {
     private void selectDay(int dayIndex) {
         selectedDayIndex = dayIndex;
         
-        String[] dayNames = {"Sen", "Sel", "Rab", "Kam", "Jum"};
-        for (int i = 0; i < 5; i++) {
+        // PERUBAHAN: Nama hari dimulai dari Minggu
+        String[] dayNames = {"Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"}; 
+        
+        for (int i = 0; i < 7; i++) { 
             LocalDate date = currentWeekStart.plusDays(i);
             String dateStr = date.format(DateTimeFormatter.ofPattern("dd MMM", new Locale("id")));
             
             final int index = i;
-            JButton btn = createDayButton(dayNames[i], dateStr, i == dayIndex);
+            JButton btn = createDayButton(dayNames[i], dateStr, i == dayIndex); 
             btn.addActionListener(e -> selectDay(index));
             
             Container parent = dayButtons[i].getParent();
             parent.remove(dayButtons[i]);
-            dayButtons[i] = btn;
             parent.add(btn, i);
+            dayButtons[i] = btn;
         }
         
         dayButtons[0].getParent().revalidate();
@@ -459,7 +468,8 @@ public class PanelDashboardDosen extends JPanel {
     private void loadJadwalForDay(int dayIndex) {
         if (jadwalService == null || idDosen == null) return;
         
-        LocalDate date = currentWeekStart.plusDays(dayIndex);
+        // Menghitung tanggal yang sesuai dari hari awal pekan (Minggu)
+        LocalDate date = currentWeekStart.plusDays(dayIndex); 
         
         SwingWorker<List<Map<String, String>>, Void> worker = new SwingWorker<>() {
             @Override
@@ -543,9 +553,33 @@ public class PanelDashboardDosen extends JPanel {
     }
     
     private LocalDate getWeekStart(LocalDate date) {
+        // PERUBAHAN: Dapatkan hari awal pekan (Minggu)
         DayOfWeek day = date.getDayOfWeek();
-        int daysToSubtract = day.getValue() - DayOfWeek.MONDAY.getValue();
-        return date.minusDays(daysToSubtract);
+        int daysToSubtract;
+        
+        if (day == DayOfWeek.SUNDAY) {
+            daysToSubtract = 0;
+        } else {
+            // Minggu=7, Senin=1. Jadi, jika Senin (1), daysToSubtract = 1.
+            // Jika hari ini Senin (1), kita ingin kembali 1 hari (1-1=0). 
+            // Jika hari ini Minggu (7), kita ingin kembali 0 hari.
+            // day.getValue() % 7 akan menghasilkan 0 untuk Minggu, 1 untuk Senin.
+            // Karena DayOfWeek.SUNDAY = 7, kita menggunakan logika ini:
+            daysToSubtract = day.getValue(); 
+            // Jika hari ini Senin (1), kita ingin kembali ke Minggu (7 hari sebelumnya): 
+            // daysToSubtract = 1. Perlu 1 hari kembali ke Minggu jika dihitung dari Senin.
+            // Logika sederhana: DaysOfWeek.getValue() untuk Sunday adalah 7.
+            // Kita hitung selisih dari Minggu (7).
+            
+            // Logika yang lebih andal: hitung selisih dari hari saat ini ke Minggu.
+            daysToSubtract = day.getValue() == 7 ? 0 : day.getValue(); // Jika Sunday, 0, selain itu 1-6
+        }
+        
+        // Menggunakan library untuk mendapatkan hari Minggu sebelumnya atau hari ini jika hari ini Minggu
+        while (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+            date = date.minusDays(1);
+        }
+        return date;
     }
     
     public void refresh() {
