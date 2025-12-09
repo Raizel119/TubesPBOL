@@ -18,7 +18,7 @@ public class SidebarButton extends JPanel {
     // Warna dasar
     private Color baseColor = new Color(255, 255, 255, 20);
     private Color hoverColor = new Color(255, 255, 255, 50);
-    private Color selectedColor = new Color(255, 255, 255, 120);
+    private Color selectedColor = new Color(255, 255, 255, 125);
 
     // Warna transisi smooth
     private float transition = 0f;
