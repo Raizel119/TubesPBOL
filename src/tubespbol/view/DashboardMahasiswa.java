@@ -13,36 +13,39 @@ public class DashboardMahasiswa extends JFrame {
 
     JPanel contentPanel;
     
-    // User data
+    // Menyimpan NIM user yang login
     private String nim;
+
+    // Menyimpan data user (nama, prodi, dsb)
     private Map<String, String> userData;
     
-    // Services
+    // Service yang digunakan panel-panel
     private UserService userService;
     private JadwalService jadwalService;
     private RequestService requestService;
 
-    // Constructor BARU dengan parameter
+    // Constructor BARU → menerima NIM & data user dari Login
     public DashboardMahasiswa(String nim, Map<String, String> userData) {
         this.nim = nim;
         this.userData = userData;
         
-        // Initialize services
+        // Inisialisasi service
         this.userService = new UserService();
         this.jadwalService = new JadwalService();
         this.requestService = new RequestService();
         
+        // Memanggil UI utama
         initComponents();
     }
     
-    // Constructor LAMA untuk backward compatibility
+    // Constructor LAMA → fallback kalau dashboard dipanggil tanpa login
     public DashboardMahasiswa() {
-        this.nim = "GUEST";
+        this.nim = "GUEST"; // mode guest
         this.userData = new java.util.HashMap<>();
         userData.put("nama", "Guest");
         userData.put("prodi", "Unknown");
         
-        // Initialize services
+        // Inisialisasi service
         this.userService = new UserService();
         this.jadwalService = new JadwalService();
         this.requestService = new RequestService();
@@ -51,36 +54,42 @@ public class DashboardMahasiswa extends JFrame {
     }
     
     private void initComponents() {
+
+        // Setup window
         setTitle("Dashboard Mahasiswa");
         setSize(1040, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         setLayout(new BorderLayout());
 
-        // ================= SIDEBAR =================
+        //      BAGIAN SIDEBAR
         JPanel sidebar = new JPanel() {
+
+            // Custom background gradient (biru → ungu)
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
+
+                // Rendering lebih halus
                 g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 
-                // Gradient dari biru ke ungu
                 GradientPaint gp = new GradientPaint(
                     0, 0, new Color(41, 128, 185),
                     0, getHeight(), new Color(142, 68, 173)
                 );
+
                 g2d.setPaint(gp);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
+
         sidebar.setPreferredSize(new Dimension(240, 600));
         sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
         
-        // Header Profile (UPDATE dengan data real)
+        //     PROFILE DI SIDEBAR
         JPanel profilePanel = new JPanel();
-        profilePanel.setOpaque(false);
+        profilePanel.setOpaque(false); 
         profilePanel.setPreferredSize(new Dimension(220, 100));
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         
@@ -106,6 +115,7 @@ public class DashboardMahasiswa extends JFrame {
         
         sidebar.add(profilePanel);
 
+        //     TOMBOL-TOMBOL SIDEBAR
         SidebarButton btnDashboard = new SidebarButton("Dashboard", "/tubespbol/resources/icons/dashboard.png");
         SidebarButton btnJadwal = new SidebarButton("Jadwal", "/tubespbol/resources/icons/schedule.png");
         SidebarButton btnPermintaan = new SidebarButton("Permintaan", "/tubespbol/resources/icons/request.png");
@@ -120,17 +130,25 @@ public class DashboardMahasiswa extends JFrame {
 
         add(sidebar, BorderLayout.WEST);
 
-        // ================= CONTENT AREA =================
+        // CONTENT PANEL
         contentPanel = new JPanel(new CardLayout());
         add(contentPanel, BorderLayout.CENTER);
 
-        // Add Panels (PASS USER DATA ke panel)
+        /*
+         * Di bawah ini panel-panel ditambahkan ke contentPanel.
+         * Setiap panel menerima:
+         * - nim → ID mahasiswa
+         * - userData → nama, prodi
+         * - service masing-masing untuk fetch data
+         */
         contentPanel.add(new PanelDashboard(nim, userData, requestService, jadwalService), "dashboard");
         contentPanel.add(new PanelJadwal(nim, userData, userService, jadwalService), "jadwal");
         contentPanel.add(new PanelPermintaan(nim, userData, userService, jadwalService, requestService), "permintaan");
         contentPanel.add(new PanelRiwayat(nim, userData, requestService), "riwayat");
 
-        // ================= LISTENERS =================
+        // EVENT LISTENER
+
+        // Mengganti panel menggunakan CardLayout
         btnDashboard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 showPanel("dashboard");
@@ -151,8 +169,11 @@ public class DashboardMahasiswa extends JFrame {
                 showPanel("riwayat");
             }
         });
+
+        // Tombol logout → kembali ke login form
         btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+
                 int confirm = JOptionPane.showConfirmDialog(
                     DashboardMahasiswa.this,
                     "Apakah Anda yakin ingin logout?",
@@ -161,7 +182,8 @@ public class DashboardMahasiswa extends JFrame {
                 );
                 
                 if (confirm == JOptionPane.YES_OPTION) {
-                    dispose();
+                    dispose(); // Menutup dashboard
+
                     LoginForm loginForm = new LoginForm();
                     new LoginController(loginForm);
                     loginForm.setVisible(true);
@@ -169,15 +191,16 @@ public class DashboardMahasiswa extends JFrame {
             }
         });
 
-        setVisible(true);
+        setVisible(true); // Menampilkan window
     }
 
+    // Fungsi untuk mengganti panel
     private void showPanel(String name) {
         CardLayout cl = (CardLayout) (contentPanel.getLayout());
         cl.show(contentPanel, name);
     }
     
-    // Getter methods untuk diakses oleh panel-panel
+    // Getter untuk diakses panel
     public String getNim() {
         return nim;
     }

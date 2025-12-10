@@ -9,17 +9,18 @@ import java.awt.event.MouseEvent;
 
 public class LoginForm extends JFrame {
     
-    // Komponen Input dijadikan Global agar bisa diakses Controller
-    private JTextField txtUser;
-    private JPasswordField txtPass;
-    private JComboBox<String> cmbRole;
-    private JButton btnLogin;
+    // Komponen input dijadikan global agar bisa diakses Controller
+    private JTextField txtUser;          // Input ID / username
+    private JPasswordField txtPass;      // Input password
+    private JComboBox<String> cmbRole;   // ComboBox role (Mahasiswa / Dosen)
+    private JButton btnLogin;            // Tombol login
     
-    // Variabel untuk menyimpan karakter default echo char (biasanya '*')
-    private char defaultEchoChar; 
+    // Menyimpan karakter default '*' dari password field
+    private char defaultEchoChar;
 
     public LoginForm() {
-        // ========== FLATLAF (modern) ==========
+
+        // Mengatur tampilan aplikasi menjadi FlatLightLaf agar UI lebih modern
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception e) {
@@ -32,21 +33,25 @@ public class LoginForm extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
 
-        // ========== PANEL GRADIENT BACKGROUND ==========
         JPanel bg = new JPanel() {
+
+            // Melukis background gradient + dekorasi lingkaran blur
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
+
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+                // Gradient biru → biru terang
                 GradientPaint gp = new GradientPaint(
                         0, 0, new Color(20, 60, 140),
                         getWidth(), getHeight(), new Color(46, 134, 193)
                 );
                 g2.setPaint(gp);
                 g2.fillRect(0, 0, getWidth(), getHeight());
-                
+
+                // Lingkaran dekoratif soft blur
                 g2.setColor(new Color(255, 255, 255, 15));
                 g2.fillOval(-50, -50, 200, 200);
                 g2.fillOval(getWidth() - 150, getHeight() - 150, 200, 200);
@@ -55,7 +60,6 @@ public class LoginForm extends JFrame {
         bg.setLayout(new GridBagLayout());
         add(bg, BorderLayout.CENTER);
 
-        // ========== INNER CARD (FORM CONTENT) ==========
         JPanel innerCard = new JPanel();
         innerCard.setPreferredSize(new Dimension(380, 480));
         innerCard.setBackground(Color.WHITE);
@@ -63,7 +67,9 @@ public class LoginForm extends JFrame {
         innerCard.setLayout(new GridBagLayout());
         innerCard.setOpaque(true);
 
+        // Dibungkus panel shadow agar terlihat melayang
         JPanel outerCard = wrapRoundedWithShadow(innerCard, 20);
+        
         GridBagConstraints gbcCard = new GridBagConstraints();
         bg.add(outerCard, gbcCard);
 
@@ -72,8 +78,7 @@ public class LoginForm extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
 
-        // ========== LOGO & TITLE ==========
-        JLabel lblIcon = new JLabel("📅"); // Icon diubah ke yang lebih relevan
+        JLabel lblIcon = new JLabel("📅"); // Icon emoji sederhana
         lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
         lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 0;
@@ -86,7 +91,7 @@ public class LoginForm extends JFrame {
         gbc.gridy = 1;
         gbc.insets = new Insets(5, 5, 3, 5);
         innerCard.add(lblTitle, gbc);
-        
+
         JLabel lblSubtitle = new JLabel("Sistem Informasi General Manajemen Agreement");
         lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         lblSubtitle.setForeground(new Color(120, 120, 120));
@@ -94,13 +99,13 @@ public class LoginForm extends JFrame {
         gbc.gridy = 2;
         gbc.insets = new Insets(0, 5, 15, 5);
         innerCard.add(lblSubtitle, gbc);
-        
+
         gbc.insets = new Insets(8, 5, 8, 5);
 
-        // ========== INPUT FIELDS ==========
         JLabel lblUser = new JLabel("ID");
         lblUser.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblUser.setForeground(new Color(60, 60, 60));
+
         txtUser = new JTextField();
         txtUser.putClientProperty("JTextField.placeholderText", "Masukkan ID User");
         txtUser.setPreferredSize(new Dimension(0, 35));
@@ -111,15 +116,15 @@ public class LoginForm extends JFrame {
         JLabel lblPass = new JLabel("Password");
         lblPass.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblPass.setForeground(new Color(60, 60, 60));
-        
+
         txtPass = new JPasswordField();
         txtPass.putClientProperty("JTextField.placeholderText", "Masukkan Password");
         txtPass.setPreferredSize(new Dimension(0, 35));
-        
-        // Simpan karakter echo char default (*)
+
+        // Simpan karakter default '*' untuk nanti dipakai saat toggle
         defaultEchoChar = txtPass.getEchoChar();
 
-        // Panggil helper untuk menambahkan tombol mata
+        // Tambahkan tombol "show/hide password"
         addPasswordShowHideToggle(txtPass);
 
         gbc.gridy = 5; innerCard.add(lblPass, gbc);
@@ -128,13 +133,14 @@ public class LoginForm extends JFrame {
         JLabel lblRole = new JLabel("Login sebagai");
         lblRole.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblRole.setForeground(new Color(60, 60, 60));
+
+        // Role: Mahasiswa / Dosen
         cmbRole = new JComboBox<>(new String[]{"Mahasiswa", "Dosen"});
         cmbRole.setPreferredSize(new Dimension(0, 35));
 
         gbc.gridy = 7; innerCard.add(lblRole, gbc);
         gbc.gridy = 8; innerCard.add(cmbRole, gbc);
 
-        // ========== LOGIN BUTTON ==========
         btnLogin = new JButton("Login");
         btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 15));
         btnLogin.setPreferredSize(new Dimension(0, 42));
@@ -143,33 +149,31 @@ public class LoginForm extends JFrame {
         btnLogin.setFocusPainted(false);
         btnLogin.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
+
         gbc.gridy = 9;
         gbc.insets = new Insets(15, 5, 8, 5);
         innerCard.add(btnLogin, gbc);
     }
-    
-    /**
-     * Helper method untuk menambahkan tombol show/hide password menggunakan
-     * fitur FlatLaf (trailingComponent).
-     */
+
     private void addPasswordShowHideToggle(JPasswordField passwordField) {
-        // PERUBAHAN UTAMA: Tombol mata
+
+        // Toggle button: Klik → tampilkan password | klik lagi → sembunyikan
         JToggleButton showHideButton = new JToggleButton(new AbstractAction("👁️") {
-            // Gunakan AbstractAction agar mudah mengatur ikon dan teks
-            private final String SHOW_TEXT = "🙈";
-            private final String HIDE_TEXT = "👁️";
+
+            private final String SHOW_TEXT = "🙈";  // Saat password ditampilkan
+            private final String HIDE_TEXT = "👁️";  // Saat password disembunyikan
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 JToggleButton btn = (JToggleButton) e.getSource();
+
                 if (btn.isSelected()) {
-                    // Tampilkan Password: set echo char ke 0 (menampilkan teks)
+                    // Menampilkan password
                     passwordField.setEchoChar((char) 0);
                     btn.setText(SHOW_TEXT);
                     btn.setToolTipText("Sembunyikan password");
                 } else {
-                    // Sembunyikan Password: set echo char ke default (*)
+                    // Menyembunyikan kembali
                     passwordField.setEchoChar(defaultEchoChar);
                     btn.setText(HIDE_TEXT);
                     btn.setToolTipText("Tampilkan password");
@@ -177,22 +181,20 @@ public class LoginForm extends JFrame {
             }
         });
 
-        // Pengaturan Tampilan Tombol
+        // Tampilan tombol mata
         showHideButton.setFocusPainted(false);
         showHideButton.setMargin(new Insets(2, 5, 2, 5));
         showHideButton.setOpaque(false);
         showHideButton.setBorderPainted(false);
         showHideButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         showHideButton.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
-        showHideButton.setForeground(new Color(100, 100, 100)); // Warna abu-abu
-        showHideButton.setToolTipText("Tampilkan password");
+        showHideButton.setForeground(new Color(100, 100, 100));
 
-        // Masukkan tombol ke JPasswordField (fitur FlatLaf)
+        // Memasukkan tombol mata ke dalam field (fitur FlatLaf)
         passwordField.putClientProperty("JTextField.trailingComponent", showHideButton);
-        // Atur agar tombol tidak menghabiskan padding
         passwordField.putClientProperty("JComponent.minimumWidth", 0);
-        
-        // Tambahkan hover effect manual karena tombol berada di dalam JPasswordField
+
+        // Efek hover (karena tombol berada di dalam password field)
         showHideButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -210,48 +212,56 @@ public class LoginForm extends JFrame {
     }
 
 
-    // ===== METHOD PENTING UNTUK CONTROLLER =====
-    
     public String getID() {
-        return txtUser.getText().trim();
+        return txtUser.getText().trim();  // Ambil ID user
     }
 
     public String getPassword() {
-        return new String(txtPass.getPassword());
+        return new String(txtPass.getPassword()); // Ambil password
     }
 
     public String getRole() {
-        return cmbRole.getSelectedItem().toString();
-    }
-    
-    public JButton getBtnLogin() {
-        return btnLogin;
+        return cmbRole.getSelectedItem().toString(); // Ambil role
     }
 
-    // Controller akan memanggil ini untuk memasang "telinga"
+    public JButton getBtnLogin() {
+        return btnLogin; // Biar controller bisa pasang listener
+    }
+
     public void setLoginListener(ActionListener listener) {
         btnLogin.addActionListener(listener);
     }
 
-    // ===== UI HELPER =====
     private JPanel wrapRoundedWithShadow(JPanel panel, int radius) {
         return new JPanel(new BorderLayout()) {
+
             {
                 setOpaque(false);
                 setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 add(panel, BorderLayout.CENTER);
             }
+
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
+
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Shadow berlapis-lapis
                 g2.setColor(new Color(0, 0, 0, 30));
                 for (int i = 0; i < 5; i++) {
-                    g2.fillRoundRect(10 - i, 10 - i, getWidth() - 20 + (i * 2), 
-                                     getHeight() - 20 + (i * 2), radius + i, radius + i);
+                    g2.fillRoundRect(
+                        10 - i, 10 - i,
+                        getWidth() - 20 + (i * 2),
+                        getHeight() - 20 + (i * 2),
+                        radius + i, radius + i
+                    );
                 }
+
+                // Isi kartu putih
                 g2.setColor(Color.WHITE);
                 g2.fillRoundRect(10, 10, getWidth() - 20, getHeight() - 20, radius, radius);
+
                 super.paintComponent(g);
             }
         };
